@@ -10,11 +10,14 @@ WORKDIR /var/seniot
 ADD . /var/seniot
 RUN git clone https://github.com/seniot/node-red.git /var/seniot/workflow
 RUN cd /var/seniot/workflow/ \
+	&& git pull \
 	&& npm install \
 	&& npm update \
 	&& npm install -g grunt-cli \
-	&& grunt build \
-	&& node red
+	&& grunt build
 
 # expose port
 EXPOSE 1880
+
+# Run app using nodemon
+CMD ["node", "/var/seniot/workflow/red.js"]
