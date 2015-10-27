@@ -5,17 +5,16 @@ MAINTAINER cpswan
 
 # Define working directory
 RUN mkdir -p /var/seniot/
+# install node-red from seniot/ repository
 WORKDIR /var/seniot
 ADD . /var/seniot
-
-# install node-red from seniot/ repository
 RUN git clone https://github.com/seniot/node-red.git /var/seniot/workflow
-RUN cd /var/seniot/workflow/
-RUN npm install
-RUN npm update
-RUN npm install -g grunt-cli
-RUN grunt build
-RUN node red
+RUN cd /var/seniot/workflow/ \
+	&& npm install \
+	&& npm update \
+	&& npm install -g grunt-cli \
+	&& grunt build \
+	&& node red
 
 # expose port
 EXPOSE 1880
