@@ -1,13 +1,25 @@
-FROM node:0.12
+# Set nginx base image
+FROM nginx
 
 MAINTAINER fpt-softare
 
-# install node-red
-RUN npm install -g node-red
+# Install wget and install/updates certificates
+RUN apt-get update \
+ && apt-get install -y -q --no-install-recommends \
+    ca-certificates \
+    wget \
+ && apt-get clean \
+ && rm -r /var/lib/apt/lists/*
+
+# Copy custom configuration file from the current directory
+COPY nginx.conf /etc/nginx/nginx.conf
+
+# Configure Nginx and apply fix for very long server names
+RUN echo "daemon off;" >> /etc/nginx/nginx.conf \
+ && sed -i 's/^http {/&\n    server_names_hash_bucket_size 128;/g' /etc/nginx/nginx.conf
 
 # expose port
-EXPOSE 1880
+EXPOSE 80
+EXPOSE 443
 
-# Set the default command to execute
-# when creating a new container
-CMD ["/usr/local/bin/node-red"]
+VOLUME ["/etc/nginx/certs"]
