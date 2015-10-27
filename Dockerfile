@@ -1,7 +1,7 @@
-# Set nginx base image
+# Set node base image
 FROM node:0.12
 
-MAINTAINER cpswan
+MAINTAINER fpt-softwre
 
 # Define working directory
 RUN mkdir -p /var/seniot/
