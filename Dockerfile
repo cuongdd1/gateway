@@ -1,25 +1,21 @@
 # Set nginx base image
-FROM nginx
+FROM node:0.12
 
-MAINTAINER fpt-softare
+MAINTAINER cpswan
 
-# Install wget and install/updates certificates
-RUN apt-get update \
- && apt-get install -y -q --no-install-recommends \
-    ca-certificates \
-    wget \
- && apt-get clean \
- && rm -r /var/lib/apt/lists/*
+# Define working directory
+RUN mkdir -p /var/seniot/
+WORKDIR /var/seniot
+ADD . /var/seniot
 
-# Copy custom configuration file from the current directory
-COPY nginx.conf /etc/nginx/nginx.conf
-
-# Configure Nginx and apply fix for very long server names
-RUN echo "daemon off;" >> /etc/nginx/nginx.conf \
- && sed -i 's/^http {/&\n    server_names_hash_bucket_size 128;/g' /etc/nginx/nginx.conf
+# install node-red from seniot/ repository
+RUN git clone https://github.com/seniot/node-red.git /var/seniot/workflow
+RUN cd /var/seniot/workflow/
+RUN npm install
+RUN npm update
+RUN npm install -g grunt-cli
+RUN grunt build
+RUN node red
 
 # expose port
-EXPOSE 80
-EXPOSE 443
-
-VOLUME ["/etc/nginx/certs"]
+EXPOSE 1880
