@@ -12,6 +12,7 @@ RUN git clone https://github.com/seniot/node-red.git /var/seniot/workflow
 RUN git clone https://github.com/seniot/node-red-nodes.git /var/seniot/workflow/nodes/node-red-nodes
 
 RUN cd /var/seniot/workflow/ \
+	&& git checkout v0.1.1 \
 	&& git pull \
 	&& npm install \
 	&& npm update \
@@ -19,6 +20,7 @@ RUN cd /var/seniot/workflow/ \
 	&& grunt build
 	
 RUN cd /var/seniot/workflow/nodes/node-red-nodes/ \
+	&& git checkout v0.1.1 \
 	&& git pull \
 	&& npm install \
 	&& npm update
